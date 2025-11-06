@@ -1,8 +1,8 @@
 
-if(entityStepLoop.first == 10) {
+if(entityStepLoop.first >= 10) {
                         entityStepLoop.first = 0;
                 }
-                if(entityStepLoop.second == 10) {
+                if(entityStepLoop.second >= 10) {
                         entityStepLoop.second = 0;
                 }
                 if(entPos.first != -1 && cond[entPos.first + 1] == '0' && std::abs(index - entPos.first) < 20 && entityStepLoop.first == 0) {
@@ -10,14 +10,18 @@ if(entityStepLoop.first == 10) {
                         cond[entPos.first + 1] = 'd';
                 }
                         entityStepLoop.first++;
+			if(phase2) entityStepLoop.first++; // 2 kali lipat lebih cepat
+			if(phase3) entityStepLoop.first += 2; // 4 kali lipat lebih cepat
                 if(entPos.second != -1 && cond[entPos.second - 1] == '0' && std::abs(entPos.second - index) < 20 && entityStepLoop.second == 0) {
                         cond[entPos.second] = '0';
                         cond[entPos.second - 1] = 'd';
                 }
                         entityStepLoop.second++;
+			if(phase2) entityStepLoop.second++; // 2 kali lebih cepat
+			if(phase3) entityStepLoop.second += 2; // 4 kali lipat lebih cepat
 
                 if(cond[index + 1] == 'd' || cond[index - 1] == 'd') {
-                        health -= 3;
+                        health -= (phase3 ? 30 : (phase2 ? 15 : 3));
 			if(health <= 0) {
 				lose = true;
 				break;
@@ -32,36 +36,39 @@ if(entityStepLoop.first == 10) {
 	}
                 clear();
                 inp = getch();
-                if(inp == 'q') break;
+                if(inp == 'q') {
+			save(theAcv); 
+			// fitur mendatang: achievement di gameplay
+			// future feature: reach achievement on gameplay
+			break;
+		}
                 if(energy > 0) {
                 if(inp == KEY_RIGHT) {
-                        if(index < cond.size() - 6) {
+			auto collide = detectCollide(cond, index + 1, index + speed + 1);
+				// '+ 1' agar saat blok tepat di index + speed tetap terdeteksi
+			if(collide.second - 1 != index) {
                         energy--;
                         noStep = false;
                         cond[index] = '0';
-			auto collide = detectCollide(cond, index + 1, index + speed + 1); 
 			if(collide.first == true) {
 				cond[collide.second - 1] = 'c';
 			} else {
                         cond[index + speed] = 'c';
 			}
-                        } else {
-                        energy--;
-                        noStep = false;
-                        cond[index] = '0';
-                                cond[index + speed] = 'c';
-                                expand();
-                        }
+			}
+			if(index >= cond.size() - 6) expand();
                 } else if(inp == KEY_LEFT) {
                         if(index > 0) {
+			auto collide = detectCollide(cond, index - 1, index - speed - 1); 
+			if(collide.second + 1 != index) {
                                 energy--;
                                 noStep = false;
                         cond[index] = '0';
-			auto collide = detectCollide(cond, index + 1, index - speed - 1); 
 			if(collide.first == true) {
 				cond[collide.second + 1] = 'c';
 			} else {
                         cond[index - speed] = 'c';
+			}
 			}
                         }
                 } else if(inp == 'b') {
@@ -78,6 +85,9 @@ if(entityStepLoop.first == 10) {
 					break;
 				case 'i':
 					itemCount[3]++;
+					break;
+				case 'p':
+					itemCount[4]++;
 					break;
 			}
                         cond[index + 1] = '0';
@@ -96,6 +106,9 @@ if(entityStepLoop.first == 10) {
 					break;
 				case 'i':
 					itemCount[3]++;
+					break;
+				case 'p':
+					itemCount[4]++;
 					break;
 			}
                         cond[index - 1] = '0';
@@ -136,20 +149,30 @@ if(entityStepLoop.first == 10) {
                 } else if(inp == '1') {
 			// makan apel: boost energy 10
 			if(itemCount[1] > 0) {
-			energy += 10;
+			energy += 15;
 			itemCount[1]--;
 			}
 		} else if(inp == '2') {
 			// makan wortel: vision lebih luas
 			if(itemCount[2] > 0) {
+			energy += 3;
 			expandedVision = true;
 			itemCount[2]--;
 			}
 		} else if(inp == '3') {
 			//makan cabai: lari lebih cepat dengan konsumsi energi yang sama
 			if(itemCount[3] > 0) {
+			energy += 3;
+			adrenalinePower = true;
 			speed += 2;
 			itemCount[3]--;
+			}
+		} else if(inp == '4') {
+			// makan nanas: nambah health 2
+			if(itemCount[4] > 0) {
+				energy += 3;
+				health += 2;
+				itemCount[4]--;
 			}
 		}
                 }

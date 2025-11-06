@@ -3,11 +3,9 @@ Sebuah kegagalan.
 
 Alih alih dihapus, saya jadikan museum.
 
-Fitur gagal: Simpan dan muat progress.
+Fitur gagal: paged faq
 
-Kegagalan: Segmentation Fault, perilaku aneh.
-
-Tersangka: Pointer di fungsi `LoadWorld()`;
+Kegagalan: Tidak berfungsi sama sekali, saat arrow up terjadi hal aneh (seluruh Q hilang). Terkadang segfault.
 
 # English Version:
 
@@ -15,15 +13,11 @@ A failure.
 
 Instead of deleting it, I made it into a museum.
 
-Fail feature: Save and load progress.
+Fail feature: paged q and a
 
-Failure: Segmentation Fault, strange behavior.
+Failure: It doesn't work at all, when the arrow up something strange happens (all Q(s) is missing). Sometimes it's segfault.
 
-Suspect: Pointer in function `LoadWorld()`;
 
-... 
+### Kegagalan kedua
 
-...
-### Kegagalan pertama.
-
-### First failure.
+### Second failure
